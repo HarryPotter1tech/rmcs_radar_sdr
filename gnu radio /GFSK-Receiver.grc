@@ -1,0 +1,624 @@
+options:
+  parameters:
+    author: huangziang
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: GFSK_Receiver
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: GFSK_Receiver
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: SPS
+  id: variable
+  parameters:
+    comment: ''
+    value: '52'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [392, 16.0]
+    rotation: 180
+    state: enabled
+- name: sample_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '1000000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [200, 16.0]
+    rotation: 0
+    state: enabled
+- name: signal_frequency
+  id: variable
+  parameters:
+    comment: ''
+    value: '433200000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [280, 16.0]
+    rotation: 0
+    state: enabled
+- name: signal_sensitivity
+  id: variable
+  parameters:
+    comment: ''
+    value: '1.5756'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [448, 16.0]
+    rotation: 0
+    state: enabled
+- name: blocks_char_to_float_0_0
+  id: blocks_char_to_float
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: '1'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [816, 312.0]
+    rotation: 0
+    state: true
+- name: digital_gfsk_demod_0
+  id: digital_gfsk_demod
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    freq_error: '0.05'
+    gain_mu: '0.175'
+    log: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mu: '0.5'
+    omega_relative_limit: '0.05'
+    samples_per_symbol: SPS
+    sensitivity: 1/signal_sensitivity
+    verbose: 'False'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [576, 268.0]
+    rotation: 0
+    state: true
+- name: epy_block_1_0
+  id: epy_block
+  parameters:
+    _source_code: "import numpy as np\nfrom gnuradio import gr\n\n\nclass blk(gr.sync_block):\n\
+      \    def __init__(\n        self,\n        # cmd_id=0x0a01\n        cmd_id_1:\
+      \ int = 0x0A01,\n        hero_position: tuple = (0, 0),\n        engineer_position:\
+      \ tuple = (0, 0),\n        infentry_position_1: tuple = (0, 0),\n        infentry_position_2:\
+      \ tuple = (0, 0),\n        drone_position: tuple = (0, 0),\n        sentinel_position:\
+      \ tuple = (0, 0),\n        # cmd_id=0x0a02\n        cmd_id_2: int = 0x0A02,\n\
+      \        hero_blood: int = 200,\n        engineer_blood: int = 200,\n      \
+      \  infentry_blood_1: int = 200,\n        infentry_blood_2: int = 200,\n    \
+      \    save_blood: int = 0x0000,\n        sentinel_blood: int = 200,\n       \
+      \ # cmd_id=0x0a03\n        cmd_id_3: int = 0x0A03,\n        hero_ammunition:\
+      \ int = 100,\n        infentry_ammunition_1: int = 100,\n        infentry_ammunition_2:\
+      \ int = 100,\n        drone_ammunition: int = 100,\n        sentinel_ammunition:\
+      \ int = 100,\n        # cmd_id=0x0a04\n        cmd_id_4: int = 0x0A04,\n   \
+      \     econmic_remain: int = 1000,\n        economic_total: int = 0,\n      \
+      \  supply_zone_occupation_status: int = 0,\n        central_highland_occupation_status:\
+      \ int = 0,\n        trapezoidal_highland_occupation_status: int = 0,\n     \
+      \   fortress_bonus_points_occupation_status: int = 0,\n    ):\n        gr.sync_block.__init__(\n\
+      \            self,\n            name=\"Message Value Generator\",\n        \
+      \    in_sig=None,\n            out_sig=[np.float32],\n        )\n        self.hero_position\
+      \ = hero_position\n        self.engineer_position = engineer_position\n    \
+      \    self.infentry_position_1 = infentry_position_1\n        self.infentry_position_2\
+      \ = infentry_position_2\n        self.drone_position = drone_position\n    \
+      \    self.sentinel_position = sentinel_position\n\n    def work(self, input_items,\
+      \ output_items):\n        return len(output_items[0])\n"
+    affinity: ''
+    alias: ''
+    central_highland_occupation_status: ''
+    cmd_id_1: '2561'
+    cmd_id_2: '2562'
+    cmd_id_3: '2563'
+    cmd_id_4: '2564'
+    comment: ''
+    drone_ammunition: '100'
+    drone_position: (0, 0)
+    econmic_remain: '1000'
+    economic_total: '0'
+    engineer_blood: '200'
+    engineer_position: (0, 0)
+    fortress_bonus_points_occupation_status: ''
+    hero_ammunition: '100'
+    hero_blood: '200'
+    hero_position: (0, 0)
+    infentry_ammunition_1: '100'
+    infentry_ammunition_2: '100'
+    infentry_blood_1: '200'
+    infentry_blood_2: '200'
+    infentry_position_1: (0, 0)
+    infentry_position_2: (0, 0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    save_blood: '0'
+    sentinel_ammunition: '100'
+    sentinel_blood: '200'
+    sentinel_position: (0, 0)
+    supply_zone_occupation_status: '0'
+    trapezoidal_highland_occupation_status: ''
+  states:
+    _io_cache: ('Message Value Generator', 'blk', [('cmd_id_1', '2561'), ('hero_position',
+      '(0, 0)'), ('engineer_position', '(0, 0)'), ('infentry_position_1', '(0, 0)'),
+      ('infentry_position_2', '(0, 0)'), ('drone_position', '(0, 0)'), ('sentinel_position',
+      '(0, 0)'), ('cmd_id_2', '2562'), ('hero_blood', '200'), ('engineer_blood', '200'),
+      ('infentry_blood_1', '200'), ('infentry_blood_2', '200'), ('save_blood', '0'),
+      ('sentinel_blood', '200'), ('cmd_id_3', '2563'), ('hero_ammunition', '100'),
+      ('infentry_ammunition_1', '100'), ('infentry_ammunition_2', '100'), ('drone_ammunition',
+      '100'), ('sentinel_ammunition', '100'), ('cmd_id_4', '2564'), ('econmic_remain',
+      '1000'), ('economic_total', '0'), ('supply_zone_occupation_status', '0'), ('central_highland_occupation_status',
+      '0'), ('trapezoidal_highland_occupation_status', '0'), ('fortress_bonus_points_occupation_status',
+      '0')], [], [('0', 'float', 1)], '', ['drone_position', 'engineer_position',
+      'hero_position', 'infentry_position_1', 'infentry_position_2', 'sentinel_position'])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1224, 196.0]
+    rotation: 0
+    state: true
+- name: iio_pluto_source_0
+  id: iio_pluto_source
+  parameters:
+    affinity: ''
+    alias: ''
+    bandwidth: '1000000'
+    bbdc: 'True'
+    buffer_size: '32768'
+    comment: ''
+    filter: ''
+    filter_source: '''Auto'''
+    fpass: '0'
+    frequency: signal_frequency
+    fstop: '0'
+    gain1: '''manual'''
+    len_tag_key: packet_len
+    manual_gain1: '60'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    quadrature: 'True'
+    rfdc: 'True'
+    samplerate: sample_rate
+    type: fc32
+    uri: 192.168.1.10
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 220.0]
+    rotation: 0
+    state: true
+- name: low_pass_filter_0
+  id: low_pass_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    beta: '6.76'
+    comment: ''
+    cutoff_freq: '260000'
+    decim: '1'
+    gain: '1'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: sample_rate
+    type: fir_filter_ccf
+    width: '10000'
+    win: window.WIN_HAMMING
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [336, 144.0]
+    rotation: 0
+    state: true
+- name: qtgui_freq_sink_x_0_0
+  id: qtgui_freq_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'True'
+    average: '0.05'
+    axislabels: 'True'
+    bw: sample_rate*2
+    color1: '"dark blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    ctrlpanel: 'True'
+    fc: signal_frequency
+    fftsize: '8192'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label: db
+    label1: frequency
+    label10: ''''''
+    label2: ''''''
+    label3: ''''''
+    label4: ''''''
+    label5: ''''''
+    label6: ''''''
+    label7: ''''''
+    label8: ''''''
+    label9: ''''''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: "\"GFSK-signal\u9891\u7387\u56FE\""
+    nconnections: '1'
+    norm_window: 'False'
+    showports: 'True'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_tag: '""'
+    type: complex
+    units: dB
+    update_time: '1'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    wintype: window.WIN_HAMMING
+    ymax: '0'
+    ymin: '-70'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [576, 428.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_freq_sink_x_0_0_0
+  id: qtgui_freq_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'True'
+    average: '0.05'
+    axislabels: 'True'
+    bw: sample_rate*2
+    color1: '"dark blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    ctrlpanel: 'True'
+    fc: '0'
+    fftsize: '8192'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label: db
+    label1: frequency
+    label10: ''''''
+    label2: ''''''
+    label3: ''''''
+    label4: ''''''
+    label5: ''''''
+    label6: ''''''
+    label7: ''''''
+    label8: ''''''
+    label9: ''''''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: "\"GFSK-signal\u9891\u7387\u56FE\""
+    nconnections: '1'
+    norm_window: 'False'
+    showports: 'True'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_tag: '""'
+    type: complex
+    units: dB
+    update_time: '1'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    wintype: window.WIN_HAMMING
+    ymax: '0'
+    ymin: '-70'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [328, 348.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_time_sink_x_0_0_0_0_0_0_0_1
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'True'
+    axislabels: 'True'
+    color1: cyan
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'True'
+    entags: 'True'
+    grid: 'True'
+    gui_hint: ''
+    label1: signal_output_re
+    label10: Signal 10
+    label2: signal_output_im
+    label3: Signal 3
+    label4: Signal 4
+    label5: Signal 5
+    label6: Signal 6
+    label7: Signal 7
+    label8: Signal 8
+    label9: Signal 9
+    legend: 'True'
+    marker1: '4'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: "\"signal\u63A5\u6536\""
+    nconnections: '1'
+    size: '2048'
+    srate: sample_rate / SPS
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: float
+    update_time: '1'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '6'
+    ymin: '-6'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [992, 284.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_time_sink_x_0_0_0_0_0_0_0_2
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'True'
+    axislabels: 'True'
+    color1: cyan
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'True'
+    entags: 'True'
+    grid: 'True'
+    gui_hint: ''
+    label1: signal_output_re
+    label10: Signal 10
+    label2: signal_output_im
+    label3: Signal 3
+    label4: Signal 4
+    label5: Signal 5
+    label6: Signal 6
+    label7: Signal 7
+    label8: Signal 8
+    label9: Signal 9
+    legend: 'True'
+    marker1: '4'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: "\"signal\u6EE4\u6CE2\u8F93\u51FA\""
+    nconnections: '1'
+    size: '2048'
+    srate: sample_rate*2
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: complex
+    update_time: '1'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '6'
+    ymin: '-6'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [584, 140.0]
+    rotation: 0
+    state: enabled
+
+connections:
+- [blocks_char_to_float_0_0, '0', qtgui_time_sink_x_0_0_0_0_0_0_0_1, '0']
+- [digital_gfsk_demod_0, '0', blocks_char_to_float_0_0, '0']
+- [iio_pluto_source_0, '0', low_pass_filter_0, '0']
+- [iio_pluto_source_0, '0', qtgui_freq_sink_x_0_0_0, '0']
+- [low_pass_filter_0, '0', digital_gfsk_demod_0, '0']
+- [low_pass_filter_0, '0', qtgui_freq_sink_x_0_0, '0']
+- [low_pass_filter_0, '0', qtgui_time_sink_x_0_0_0_0_0_0_0_2, '0']
+
+metadata:
+  file_format: 1
