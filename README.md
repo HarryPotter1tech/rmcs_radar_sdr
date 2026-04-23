@@ -1,6 +1,8 @@
-# rmcs_radar_sdr
+# alliance_radar_sdr
 。
 本项目围绕 GFSK 无线链路，完成了从业务数据构造、帧打包、GNU Radio 调制/收发，到后续分析与调试接口的基础流程。
+
+仓库地址：<https://github.com/HarryPotter1tech/alliance_radar_sdr.git>
 
 ## 环境说明
 
