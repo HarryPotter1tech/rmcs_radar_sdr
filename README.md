@@ -13,6 +13,12 @@
 source radar-sdr/bin/activate
 ```
 
+## 近期更新（2026-05-01）
+
+- 目录调整：`analysis/` 已更名为 `frame_parser/`，解析入口统一为 `frame_parser/frame_parser.py`。
+- TCP 通信扩展为 4 个进程/线程：信号接收（2000）、噪声接收（3000）、数据中心发送（4000）、数据中心接收（4000），由 `main.py` 启动。
+- `tcp_comm/tcp_comm.py` 接收端已支持断线重连。
+
 ## 近期更新（2026-04-22）
 
 - 接收分析链路调整：`analysis/analysis.py` 由原先 ZeroMQ 读取改为 TCP 客户端读取，连接 `127.0.0.1:2000`，并在缓存达到 200 字节后触发解析。
@@ -20,11 +26,6 @@ source radar-sdr/bin/activate
 - GUI 结构变更：`gui/debug_gui.py` 已移除，新增 `gui/sdr_gui.py` 与 `gui/gui_test.py`（当前为占位/初始化状态）。
 - 流图与产物更新：`GFSK-loop.grc` 已更新；`launch/package.bin` 随业务帧生成逻辑重新产出。
 - 虚拟环境依赖更新：当前 `radar-sdr/` 环境中新增 `startrek`、`tcp` 相关包及对应 `.dist-info` 文件（由终端安装依赖产生）。
-
-## 近期更新（2026-05-01）
-
-- `tcp_comm/tcp_comm.py`：接收端新增断线自动重连逻辑，连接中断或 `recv` 异常会重新建立连接。
-- `frame_parser/`：解析器已整理为独立包目录，使用 `frame_parser/frame_parser.py` 作为导入路径。
 
 ## 近期环境调整（2026-04-22 夜间）
 
@@ -44,7 +45,7 @@ source radar-sdr/bin/activate
 
 ### 模块更新
 
-- 修改：`analysis/analysis.py`、`analysis/frame_parser.py`、`GFSK-loop.grc`、`launch/package.bin`。
+- 修改：`frame_parser/frame_parser.py`、`tcp_comm/tcp_comm.py`、`main.py`、`GFSK-loop.grc`、`launch/package.bin`。
 - 删除：`gui/debug_gui.py`、`gui/sdr_gui.py`、`gui/gui_test.py`。
 - 新增：`GFSK_Transmmit_signal.py`、根目录 `package.bin`。
 - 环境新增：`radar-sdr/lib/python3.10/site-packages/startrek/`、`radar-sdr/lib/python3.10/site-packages/tcp/`、`radar-sdr/lib/python3.10/site-packages/mqtt-0.0.1.egg-info/`。
@@ -106,30 +107,26 @@ source radar-sdr/bin/activate
 - `GFSK-loop.grc`
 	- 环路/联调版本流图（用于联合验证）。
 
-### 3) `analysis/`：接收数据分析
-
-- `analysis.py`
-	- 使用 TCP Socket 连接 `127.0.0.1:2000`。
-	- 持续接收字节分块并进行缓存，达到阈值后调用帧解析器完成基础打印。
-	- 当前作为接收分析入口，后续可继续叠加 CRC 校验、切帧统计和业务分发。
-
-### 3.1) `tcp_comm/`：TCP 接收与转发
-
-- `tcp_comm.py`
-	- 接收端连接 `127.0.0.1:2000` 与 `127.0.0.1:3000`，支持断线重连。
-	- 转发端监听 `192.168.1.10:4000`，向 Unity 客户端发送解析结果。
+### 3) `frame_parser/`：接收数据解析
 
 - `frame_parser.py`
 	- 负责接收端业务字段解析（当前由上层输入完整待解析负载）。
 	- 已按协议同步 `0x0A05` 的字段布局与偏移，包含哨兵姿态字段。
 
-- `frame_divde.py`
-	- 预留帧切分脚本（当前为空）。
-
 ### 4) `gui/`：可视化调试
 
 - 当前状态：Python 侧 GUI 原型已移除，目录预留。
 - 规划：后续整体 UI 将使用 Rust 重写，并作为库（lib）形式引入，通过 MQTT 与链路/分析模块通信。
+
+### 5) `tcp_comm/`：TCP 收发与解析入口
+
+- `tcp_comm.py`
+	- 作为 GNU Radio TCP 输出的接收端入口，内置断线后自动重连。
+	- 启动 4 个进程/线程：信号接收、噪声接收、数据中心发送、数据中心接收。
+	- 依赖解析包 `frame_parser/frame_parser.py`。
+
+- `main.py`
+	- TCP 入口聚合启动脚本，使用线程同时启动 4 个通道。
 
 ## 端到端流程
 
@@ -138,7 +135,7 @@ source radar-sdr/bin/activate
 3. `launch/launch.py` 输出 `package.bin`。
 4. `gnu radio /GFSK-Transmmit-signal.grc` 或对应 Python 流图读取 `package.bin`，执行 GFSK 调制并通过 Pluto 发射。
 5. 接收端流图完成解调后通过本地 TCP 服务输出。
-6. `analysis/analysis.py` 接收并准备后续分析。
+6. `main.py` 启动 TCP 端接收与转发，完成解析入口联调。
 
 ## 快速使用（最小路径）
 
@@ -161,21 +158,20 @@ python launch.py
 ### 3) 启动分析接收
 
 ```bash
-cd analysis
-python analysis.py
+python main.py
 ```
 
 ## 当前状态与注意事项
 
-- `analysis/frame_divde.py` 仍为空，需要补充切帧功能实现。
 - Python GUI 原型已下线，后续 UI 方案为 Rust lib + MQTT 通信。
-- `analysis.py` 已接入 `FrameParser`，但仍建议后续补上 CRC 校验与异常帧统计。
+- 解析入口已迁移至 `frame_parser/frame_parser.py`，建议后续补上 CRC 校验与异常帧统计。
+- `tcp_comm/tcp_comm.py` 已支持断线重连，入口通过 `main.py` 启动 4 个通道。
 - GNU Radio 导出脚本中 `blocks_file_source` 路径写为 `.../tool/package.bin`，与当前仓库目录 `launch/package.bin` 可能不一致，运行前请确认并修改。
 - 文件与类名存在拼写 `Transmmit`（双 m），属于当前项目命名约定，引用时需保持一致。
 
 ## 后续建议
 
-1. 在 `analysis/frame_divde.py` 实现基于 `access_code + header` 的切帧器。
-2. 在 `analysis.py` 增加 CRC8/CRC16 校验与命令字分发解析。
+1. 在解析链路中补充基于 `access_code + header` 的切帧器。
+2. 在 `frame_parser/frame_parser.py` 增加 CRC8/CRC16 校验与命令字分发解析。
 3. 设计并落地 Rust UI 库接口，明确与 Python 侧的 MQTT topic、QoS、消息格式约定。
 4. 统一 `package.bin` 产物路径，避免 `launch/` 与 `tool/` 的路径分叉。
