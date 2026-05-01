@@ -7,42 +7,30 @@
 # GNU Radio Python Flow Graph
 # Title: GFSK_Transmmit_signal
 # Author: huangziang
-# GNU Radio version: 3.10.1.1
+# GNU Radio version: 3.10.7.0
 
 from packaging.version import Version as StrictVersion
-
-if __name__ == '__main__':
-    import ctypes
-    import sys
-    if sys.platform.startswith('linux'):
-        try:
-            x11 = ctypes.cdll.LoadLibrary('libX11.so')
-            x11.XInitThreads()
-        except:
-            print("Warning: failed to XInitThreads()")
-
 from PyQt5 import Qt
-from PyQt5.QtCore import QObject, pyqtSlot
 from gnuradio import qtgui
-from gnuradio.filter import firdes
-import sip
+from PyQt5.QtCore import QObject, pyqtSlot
 from gnuradio import blocks
 import pmt
 from gnuradio import digital
 from gnuradio import filter
+from gnuradio.filter import firdes
 from gnuradio import gr
 from gnuradio.fft import window
 import sys
 import signal
+from PyQt5 import Qt
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import iio
-from gnuradio import zeromq
+from gnuradio import network
+import sip
 
 
-
-from gnuradio import qtgui
 
 class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
 
@@ -53,8 +41,8 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
-        except:
-            pass
+        except BaseException as exc:
+            print(f"Qt GUI: Could not set Icon: {str(exc)}", file=sys.stderr)
         self.top_scroll_layout = Qt.QVBoxLayout()
         self.setLayout(self.top_scroll_layout)
         self.top_scroll = Qt.QScrollArea()
@@ -74,8 +62,8 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
                 self.restoreGeometry(self.settings.value("geometry").toByteArray())
             else:
                 self.restoreGeometry(self.settings.value("geometry"))
-        except:
-            pass
+        except BaseException as exc:
+            print(f"Qt GUI: Could not restore geometry: {str(exc)}", file=sys.stderr)
 
         ##################################################
         # Variables
@@ -102,11 +90,11 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
-        self.zeromq_push_sink_0 = zeromq.push_sink(gr.sizeof_char, 1, '', 100, False, -1)
+
         self.qtgui_time_sink_x_0_0_0_0_0_0_0_2_0 = qtgui.time_sink_f(
             2048, #size
             sample_rate*2, #samp_rate
-            "signal输入", #name
+            "signal发送bits", #name
             1, #number of inputs
             None # parent
         )
@@ -205,7 +193,7 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
         self.qtgui_time_sink_x_0_0_0_0_0_0_0_1 = qtgui.time_sink_f(
             2048, #size
             sample_rate / SPS, #samp_rate
-            "signal接收", #name
+            "signal接收bits", #name
             1, #number of inputs
             None # parent
         )
@@ -254,13 +242,13 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
             8192, #size
             window.WIN_HAMMING, #wintype
             0, #fc
-            sample_rate*2, #bw
-            "GFSK-signal频率图", #name
+            (sample_rate*2), #bw
+            "GFSK-signal接收滤波前频谱图", #name
             1,
             None # parent
         )
         self.qtgui_freq_sink_x_0_0_0.set_update_time(1)
-        self.qtgui_freq_sink_x_0_0_0.set_y_axis(-70, 0)
+        self.qtgui_freq_sink_x_0_0_0.set_y_axis((-70), 0)
         self.qtgui_freq_sink_x_0_0_0.set_y_label('db', 'dB')
         self.qtgui_freq_sink_x_0_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
         self.qtgui_freq_sink_x_0_0_0.enable_autoscale(True)
@@ -296,13 +284,13 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
             8192, #size
             window.WIN_HAMMING, #wintype
             signal_frequency, #fc
-            sample_rate*2, #bw
-            "GFSK-signal频率图", #name
+            (sample_rate*2), #bw
+            "GFSK-signal接收频谱图", #name
             1,
             None # parent
         )
         self.qtgui_freq_sink_x_0_0.set_update_time(1)
-        self.qtgui_freq_sink_x_0_0.set_y_axis(-70, 0)
+        self.qtgui_freq_sink_x_0_0.set_y_axis((-70), 0)
         self.qtgui_freq_sink_x_0_0.set_y_label('db', 'dB')
         self.qtgui_freq_sink_x_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
         self.qtgui_freq_sink_x_0_0.enable_autoscale(True)
@@ -339,12 +327,12 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
             window.WIN_HAMMING, #wintype
             433200000, #fc
             sample_rate, #bw
-            "GFSK-signal频率图", #name
+            "GFSK-signal发送频谱图", #name
             1,
             None # parent
         )
         self.qtgui_freq_sink_x_0.set_update_time(1)
-        self.qtgui_freq_sink_x_0.set_y_axis(-200, 200)
+        self.qtgui_freq_sink_x_0.set_y_axis((-200), 200)
         self.qtgui_freq_sink_x_0.set_y_label('db', 'dB')
         self.qtgui_freq_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
         self.qtgui_freq_sink_x_0.enable_autoscale(True)
@@ -401,6 +389,7 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
         self._noise_grade_chooser_button_group.buttonClicked[int].connect(
             lambda i: self.set_noise_grade_chooser(self._noise_grade_chooser_options[i]))
         self.top_layout.addWidget(self._noise_grade_chooser_group_box)
+        self.network_tcp_sink_0 = network.tcp_sink(gr.sizeof_char, 1, '127.0.0.1', 2000,2)
         self.low_pass_filter_0 = filter.fir_filter_ccf(
             1,
             firdes.low_pass(
@@ -433,18 +422,22 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
             bt=0.35,
             verbose=True,
             log=False,
-            do_unpack=False)
+            do_unpack=True)
         self.digital_gfsk_demod_0 = digital.gfsk_demod(
             samples_per_symbol=SPS,
-            sensitivity=1/signal_sensitivity,
+            sensitivity=(1/signal_sensitivity),
             gain_mu=0.175,
             mu=0.5,
             omega_relative_limit=0.05,
             freq_error=0.05,
             verbose=False,
             log=False)
+        self.digital_correlate_access_code_xx_ts_0 = digital.correlate_access_code_bb_ts('0010111101101111010011000111010010111001000101000100100100101110',
+          12, 'access_code+header')
+        self.blocks_unpack_k_bits_bb_0 = blocks.unpack_k_bits_bb(8)
+        self.blocks_stream_to_tagged_stream_0 = blocks.stream_to_tagged_stream(gr.sizeof_char, 1, 15, "packet_len")
         self.blocks_pack_k_bits_bb_0 = blocks.pack_k_bits_bb(8)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/home/harryh/RADAR-2026/RADAR-SDR/tool/package.bin', True, 0, 0)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/home/harryh/RADAR-2026/RADAR-SDR/launch/message_package.bin', True, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_char_to_float_0_0 = blocks.char_to_float(1, 1)
         self.blocks_char_to_float_0 = blocks.char_to_float(1, 1)
@@ -455,11 +448,14 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
         ##################################################
         self.connect((self.blocks_char_to_float_0, 0), (self.qtgui_time_sink_x_0_0_0_0_0_0_0_2_0, 0))
         self.connect((self.blocks_char_to_float_0_0, 0), (self.qtgui_time_sink_x_0_0_0_0_0_0_0_1, 0))
-        self.connect((self.blocks_file_source_0, 0), (self.blocks_char_to_float_0, 0))
+        self.connect((self.blocks_file_source_0, 0), (self.blocks_unpack_k_bits_bb_0, 0))
         self.connect((self.blocks_file_source_0, 0), (self.digital_gfsk_mod_0, 0))
-        self.connect((self.blocks_pack_k_bits_bb_0, 0), (self.zeromq_push_sink_0, 0))
+        self.connect((self.blocks_pack_k_bits_bb_0, 0), (self.blocks_stream_to_tagged_stream_0, 0))
+        self.connect((self.blocks_stream_to_tagged_stream_0, 0), (self.network_tcp_sink_0, 0))
+        self.connect((self.blocks_unpack_k_bits_bb_0, 0), (self.blocks_char_to_float_0, 0))
+        self.connect((self.digital_correlate_access_code_xx_ts_0, 0), (self.blocks_pack_k_bits_bb_0, 0))
         self.connect((self.digital_gfsk_demod_0, 0), (self.blocks_char_to_float_0_0, 0))
-        self.connect((self.digital_gfsk_demod_0, 0), (self.blocks_pack_k_bits_bb_0, 0))
+        self.connect((self.digital_gfsk_demod_0, 0), (self.digital_correlate_access_code_xx_ts_0, 0))
         self.connect((self.digital_gfsk_mod_0, 0), (self.iio_pluto_sink_0, 0))
         self.connect((self.digital_gfsk_mod_0, 0), (self.qtgui_freq_sink_x_0, 0))
         self.connect((self.iio_pluto_source_0, 0), (self.low_pass_filter_0, 0))
@@ -508,7 +504,7 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
     def set_signal_frequency(self, signal_frequency):
         self.signal_frequency = signal_frequency
         self.iio_pluto_source_0.set_frequency(self.signal_frequency)
-        self.qtgui_freq_sink_x_0_0.set_frequency_range(self.signal_frequency, self.sample_rate*2)
+        self.qtgui_freq_sink_x_0_0.set_frequency_range(self.signal_frequency, (self.sample_rate*2))
 
     def get_signal_bandwidth(self):
         return self.signal_bandwidth
@@ -531,8 +527,8 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
         self.iio_pluto_source_0.set_samplerate(self.sample_rate)
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.sample_rate, 260000, 10000, window.WIN_HAMMING, 6.76))
         self.qtgui_freq_sink_x_0.set_frequency_range(433200000, self.sample_rate)
-        self.qtgui_freq_sink_x_0_0.set_frequency_range(self.signal_frequency, self.sample_rate*2)
-        self.qtgui_freq_sink_x_0_0_0.set_frequency_range(0, self.sample_rate*2)
+        self.qtgui_freq_sink_x_0_0.set_frequency_range(self.signal_frequency, (self.sample_rate*2))
+        self.qtgui_freq_sink_x_0_0_0.set_frequency_range(0, (self.sample_rate*2))
         self.qtgui_time_sink_x_0_0_0_0_0_0_0_1.set_samp_rate(self.sample_rate / self.SPS)
         self.qtgui_time_sink_x_0_0_0_0_0_0_0_2.set_samp_rate(self.sample_rate*2)
         self.qtgui_time_sink_x_0_0_0_0_0_0_0_2_0.set_samp_rate(self.sample_rate*2)

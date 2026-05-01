@@ -211,7 +211,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /home/harryh/RADAR-2026/RADAR-SDR/tool/package.bin
+    file: /home/harryh/RADAR-2026/RADAR-SDR/launch/message_package.bin
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -478,3 +478,4 @@ connections:
 
 metadata:
   file_format: 1
+  grc_version: 3.10.7.0

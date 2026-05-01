@@ -187,24 +187,26 @@ blocks:
     coordinate: [504, 16.0]
     rotation: 0
     state: enabled
-- name: analog_random_source_x_0
-  id: analog_random_source_x
+- name: blocks_file_source_0
+  id: blocks_file_source
   parameters:
     affinity: ''
     alias: ''
+    begin_tag: pmt.PMT_NIL
     comment: ''
-    max: '1'
+    file: /home/harryh/RADAR-2026/RADAR-SDR/launch/noisekey_package.bin
+    length: '0'
     maxoutbuf: '0'
-    min: '0'
     minoutbuf: '0'
-    num_samps: '1000'
+    offset: '0'
     repeat: 'True'
     type: byte
+    vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [232, 268.0]
+    coordinate: [208, 260.0]
     rotation: 0
     state: true
 - name: digital_gfsk_mod_0_0
@@ -241,7 +243,7 @@ blocks:
     filter: ''
     filter_source: '''Auto'''
     fpass: '0'
-    frequency: '433200000'
+    frequency: '432200000'
     fstop: '0'
     len_tag_key: ''
     samplerate: sample_rate
@@ -434,10 +436,11 @@ blocks:
     state: enabled
 
 connections:
-- [analog_random_source_x_0, '0', digital_gfsk_mod_0_0, '0']
+- [blocks_file_source_0, '0', digital_gfsk_mod_0_0, '0']
 - [digital_gfsk_mod_0_0, '0', iio_pluto_sink_0, '0']
 - [digital_gfsk_mod_0_0, '0', qtgui_freq_sink_x_0, '0']
 - [digital_gfsk_mod_0_0, '0', qtgui_time_sink_x_0_0_0_0_0_0_0, '0']
 
 metadata:
   file_format: 1
+  grc_version: 3.10.7.0

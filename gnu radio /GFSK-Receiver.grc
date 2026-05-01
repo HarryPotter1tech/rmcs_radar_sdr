@@ -81,6 +81,31 @@ blocks:
     coordinate: [448, 16.0]
     rotation: 0
     state: enabled
+- name: band_pass_filter_0
+  id: band_pass_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    beta: '6.76'
+    comment: ''
+    decim: '1'
+    gain: '1'
+    high_cutoff_freq: '432670000'
+    interp: '1'
+    low_cutoff_freq: '431730000'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: sample_rate
+    type: fir_filter_ccf
+    width: '1'
+    win: window.WIN_HAMMING
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [360, 512.0]
+    rotation: 0
+    state: true
 - name: blocks_char_to_float_0_0
   id: blocks_char_to_float
   parameters:
@@ -95,7 +120,132 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [816, 312.0]
+    coordinate: [896, 216.0]
+    rotation: 0
+    state: true
+- name: blocks_char_to_float_0_0_0
+  id: blocks_char_to_float
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: '1'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [896, 512.0]
+    rotation: 0
+    state: true
+- name: blocks_pack_k_bits_bb_0
+  id: blocks_pack_k_bits_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    k: '8'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1064, 328.0]
+    rotation: 0
+    state: true
+- name: blocks_pack_k_bits_bb_0_0
+  id: blocks_pack_k_bits_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    k: '8'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1072, 648.0]
+    rotation: 0
+    state: true
+- name: blocks_stream_to_tagged_stream_0
+  id: blocks_stream_to_tagged_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    len_tag_key: '"packet_len"'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    packet_len: '15'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1192, 320.0]
+    rotation: 0
+    state: true
+- name: blocks_stream_to_tagged_stream_0_0
+  id: blocks_stream_to_tagged_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    len_tag_key: '"packet_len"'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    packet_len: '15'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1200, 640.0]
+    rotation: 0
+    state: true
+- name: digital_correlate_access_code_xx_ts_0
+  id: digital_correlate_access_code_xx_ts
+  parameters:
+    access_code: '0010111101101111010011000111010010111001000101000100100100101110'
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tagname: access_code+header
+    threshold: '12'
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [824, 308.0]
+    rotation: 0
+    state: true
+- name: digital_correlate_access_code_xx_ts_0_0
+  id: digital_correlate_access_code_xx_ts
+  parameters:
+    access_code: '0010111101101111010011000111010010111001000101000100100100101110'
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tagname: access_code+header
+    threshold: '12'
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [832, 628.0]
     rotation: 0
     state: true
 - name: digital_gfsk_demod_0
@@ -121,82 +271,27 @@ blocks:
     coordinate: [576, 268.0]
     rotation: 0
     state: true
-- name: epy_block_1_0
-  id: epy_block
+- name: digital_gfsk_demod_0_0
+  id: digital_gfsk_demod
   parameters:
-    _source_code: "import numpy as np\nfrom gnuradio import gr\n\n\nclass blk(gr.sync_block):\n\
-      \    def __init__(\n        self,\n        # cmd_id=0x0a01\n        cmd_id_1:\
-      \ int = 0x0A01,\n        hero_position: tuple = (0, 0),\n        engineer_position:\
-      \ tuple = (0, 0),\n        infentry_position_1: tuple = (0, 0),\n        infentry_position_2:\
-      \ tuple = (0, 0),\n        drone_position: tuple = (0, 0),\n        sentinel_position:\
-      \ tuple = (0, 0),\n        # cmd_id=0x0a02\n        cmd_id_2: int = 0x0A02,\n\
-      \        hero_blood: int = 200,\n        engineer_blood: int = 200,\n      \
-      \  infentry_blood_1: int = 200,\n        infentry_blood_2: int = 200,\n    \
-      \    save_blood: int = 0x0000,\n        sentinel_blood: int = 200,\n       \
-      \ # cmd_id=0x0a03\n        cmd_id_3: int = 0x0A03,\n        hero_ammunition:\
-      \ int = 100,\n        infentry_ammunition_1: int = 100,\n        infentry_ammunition_2:\
-      \ int = 100,\n        drone_ammunition: int = 100,\n        sentinel_ammunition:\
-      \ int = 100,\n        # cmd_id=0x0a04\n        cmd_id_4: int = 0x0A04,\n   \
-      \     econmic_remain: int = 1000,\n        economic_total: int = 0,\n      \
-      \  supply_zone_occupation_status: int = 0,\n        central_highland_occupation_status:\
-      \ int = 0,\n        trapezoidal_highland_occupation_status: int = 0,\n     \
-      \   fortress_bonus_points_occupation_status: int = 0,\n    ):\n        gr.sync_block.__init__(\n\
-      \            self,\n            name=\"Message Value Generator\",\n        \
-      \    in_sig=None,\n            out_sig=[np.float32],\n        )\n        self.hero_position\
-      \ = hero_position\n        self.engineer_position = engineer_position\n    \
-      \    self.infentry_position_1 = infentry_position_1\n        self.infentry_position_2\
-      \ = infentry_position_2\n        self.drone_position = drone_position\n    \
-      \    self.sentinel_position = sentinel_position\n\n    def work(self, input_items,\
-      \ output_items):\n        return len(output_items[0])\n"
     affinity: ''
     alias: ''
-    central_highland_occupation_status: ''
-    cmd_id_1: '2561'
-    cmd_id_2: '2562'
-    cmd_id_3: '2563'
-    cmd_id_4: '2564'
     comment: ''
-    drone_ammunition: '100'
-    drone_position: (0, 0)
-    econmic_remain: '1000'
-    economic_total: '0'
-    engineer_blood: '200'
-    engineer_position: (0, 0)
-    fortress_bonus_points_occupation_status: ''
-    hero_ammunition: '100'
-    hero_blood: '200'
-    hero_position: (0, 0)
-    infentry_ammunition_1: '100'
-    infentry_ammunition_2: '100'
-    infentry_blood_1: '200'
-    infentry_blood_2: '200'
-    infentry_position_1: (0, 0)
-    infentry_position_2: (0, 0)
+    freq_error: '0.05'
+    gain_mu: '0.175'
+    log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
-    save_blood: '0'
-    sentinel_ammunition: '100'
-    sentinel_blood: '200'
-    sentinel_position: (0, 0)
-    supply_zone_occupation_status: '0'
-    trapezoidal_highland_occupation_status: ''
+    mu: '0.5'
+    omega_relative_limit: '0.05'
+    samples_per_symbol: SPS
+    sensitivity: 1/signal_sensitivity
+    verbose: 'False'
   states:
-    _io_cache: ('Message Value Generator', 'blk', [('cmd_id_1', '2561'), ('hero_position',
-      '(0, 0)'), ('engineer_position', '(0, 0)'), ('infentry_position_1', '(0, 0)'),
-      ('infentry_position_2', '(0, 0)'), ('drone_position', '(0, 0)'), ('sentinel_position',
-      '(0, 0)'), ('cmd_id_2', '2562'), ('hero_blood', '200'), ('engineer_blood', '200'),
-      ('infentry_blood_1', '200'), ('infentry_blood_2', '200'), ('save_blood', '0'),
-      ('sentinel_blood', '200'), ('cmd_id_3', '2563'), ('hero_ammunition', '100'),
-      ('infentry_ammunition_1', '100'), ('infentry_ammunition_2', '100'), ('drone_ammunition',
-      '100'), ('sentinel_ammunition', '100'), ('cmd_id_4', '2564'), ('econmic_remain',
-      '1000'), ('economic_total', '0'), ('supply_zone_occupation_status', '0'), ('central_highland_occupation_status',
-      '0'), ('trapezoidal_highland_occupation_status', '0'), ('fortress_bonus_points_occupation_status',
-      '0')], [], [('0', 'float', 1)], '', ['drone_position', 'engineer_position',
-      'hero_position', 'infentry_position_1', 'infentry_position_2', 'sentinel_position'])
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1224, 196.0]
+    coordinate: [600, 580.0]
     rotation: 0
     state: true
 - name: iio_pluto_source_0
@@ -204,7 +299,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    bandwidth: '1000000'
+    bandwidth: '2000000'
     bbdc: 'True'
     buffer_size: '32768'
     comment: ''
@@ -252,6 +347,42 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [336, 144.0]
+    rotation: 0
+    state: true
+- name: network_tcp_sink_0
+  id: network_tcp_sink
+  parameters:
+    addr: 127.0.0.1
+    affinity: ''
+    alias: ''
+    comment: ''
+    mode: '2'
+    port: '2000'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1408, 320.0]
+    rotation: 0
+    state: true
+- name: network_tcp_sink_0_0
+  id: network_tcp_sink
+  parameters:
+    addr: 127.0.0.1
+    affinity: ''
+    alias: ''
+    comment: ''
+    mode: '2'
+    port: '2000'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1416, 640.0]
     rotation: 0
     state: true
 - name: qtgui_freq_sink_x_0_0
@@ -469,7 +600,7 @@ blocks:
     marker7: '-1'
     marker8: '-1'
     marker9: '-1'
-    name: "\"signal\u63A5\u6536\""
+    name: "\"signal\u63A5\u6536bits\""
     nconnections: '1'
     size: '2048'
     srate: sample_rate / SPS
@@ -510,7 +641,104 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [992, 284.0]
+    coordinate: [1128, 188.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_time_sink_x_0_0_0_0_0_0_0_1_0
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'True'
+    axislabels: 'True'
+    color1: cyan
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'True'
+    entags: 'True'
+    grid: 'True'
+    gui_hint: ''
+    label1: signal_output_re
+    label10: Signal 10
+    label2: signal_output_im
+    label3: Signal 3
+    label4: Signal 4
+    label5: Signal 5
+    label6: Signal 6
+    label7: Signal 7
+    label8: Signal 8
+    label9: Signal 9
+    legend: 'True'
+    marker1: '4'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: "\"signal\u63A5\u6536bits\""
+    nconnections: '1'
+    size: '2048'
+    srate: sample_rate / SPS
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: float
+    update_time: '1'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '6'
+    ymin: '-6'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1136, 484.0]
     rotation: 0
     state: enabled
 - name: qtgui_time_sink_x_0_0_0_0_0_0_0_2
@@ -612,8 +840,20 @@ blocks:
     state: enabled
 
 connections:
+- [band_pass_filter_0, '0', digital_gfsk_demod_0_0, '0']
 - [blocks_char_to_float_0_0, '0', qtgui_time_sink_x_0_0_0_0_0_0_0_1, '0']
+- [blocks_char_to_float_0_0_0, '0', qtgui_time_sink_x_0_0_0_0_0_0_0_1_0, '0']
+- [blocks_pack_k_bits_bb_0, '0', blocks_stream_to_tagged_stream_0, '0']
+- [blocks_pack_k_bits_bb_0_0, '0', blocks_stream_to_tagged_stream_0_0, '0']
+- [blocks_stream_to_tagged_stream_0, '0', network_tcp_sink_0, '0']
+- [blocks_stream_to_tagged_stream_0_0, '0', network_tcp_sink_0_0, '0']
+- [digital_correlate_access_code_xx_ts_0, '0', blocks_pack_k_bits_bb_0, '0']
+- [digital_correlate_access_code_xx_ts_0_0, '0', blocks_pack_k_bits_bb_0_0, '0']
 - [digital_gfsk_demod_0, '0', blocks_char_to_float_0_0, '0']
+- [digital_gfsk_demod_0, '0', digital_correlate_access_code_xx_ts_0, '0']
+- [digital_gfsk_demod_0_0, '0', blocks_char_to_float_0_0_0, '0']
+- [digital_gfsk_demod_0_0, '0', digital_correlate_access_code_xx_ts_0_0, '0']
+- [iio_pluto_source_0, '0', band_pass_filter_0, '0']
 - [iio_pluto_source_0, '0', low_pass_filter_0, '0']
 - [iio_pluto_source_0, '0', qtgui_freq_sink_x_0_0_0, '0']
 - [low_pass_filter_0, '0', digital_gfsk_demod_0, '0']
@@ -622,3 +862,4 @@ connections:
 
 metadata:
   file_format: 1
+  grc_version: 3.10.7.0
