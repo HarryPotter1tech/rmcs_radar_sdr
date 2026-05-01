@@ -100,7 +100,7 @@ def tcp_datacenter_transmitter(
 ):
     print("Initializing sdr server…")
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_address = ("192.168.1.10", 4000)
+    server_address = ("192.168.1.10", 3000)
     while True:
         try:
             tcp_socket.bind(server_address)
@@ -130,7 +130,7 @@ def tcp_datacenter_transmitter(
 def tcp_datacenter_receiver(lock: threading.Lock):
     print("Initializing sdr server…")
     tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_address = ("192.168.1.10", 4000)
+    server_address = ("192.168.1.10", 2000)
     while True:
         try:
             tcp_socket.connect(server_address)
