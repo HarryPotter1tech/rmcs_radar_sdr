@@ -7,6 +7,13 @@ from frame_parser.frame_parser import (
 )
 
 
+def _update_dataclass_inplace(target, source) -> bool:
+    if source is None:
+        return False
+    target.__dict__.update(source.__dict__)
+    return True
+
+
 def tcp_gnuradio_signal_receiver(
     robomaster_signal_info: RoboMaster_Signal_Info, lock: threading.Lock
 ):
@@ -32,11 +39,8 @@ def tcp_gnuradio_signal_receiver(
                 if len(buffer) >= 200:
                     print("Received data: ", buffer)
                     with lock:
-                        copy = robomaster_signal_info
-                        robomaster_signal_info = frameparser.payload_parse(buffer)
-                        if robomaster_signal_info is None:
-                            robomaster_signal_info = copy
-                        # use copy to maintain the previous value if parsing fails, send the previous value to unity
+                        parsed = frameparser.payload_parse(buffer)
+                        _update_dataclass_inplace(robomaster_signal_info, parsed)
                     print(
                         "Parse message package complete, RoboMaster_signal_info: ",
                         robomaster_signal_info,
@@ -73,11 +77,11 @@ def tcp_gnuradio_noise_key_receiver(
                 if len(buffer) >= 200:
                     print("Received data: ", buffer)
                     with lock:
-                        copy = robomaster_noise_key
-                        robomaster_noise_key = frameparser.payload_parse(buffer)
-                        if robomaster_noise_key is None:
-                            robomaster_noise_key = copy
-                        # use copy to maintain the previous value if parsing fails, send the previous value to unity client to avoid sending None
+                        parsed = frameparser.payload_parse(buffer)
+                        _update_dataclass_inplace(robomaster_noise_key, parsed)
+                        # if parsed is None _update_dataclass_inplace will return False and robomaster_noise_key will not be updated
+                        # if parsed is not None, robomaster_noise_key will be updated and the new value will be printed
+                        # so this can maintain the old value of robomaster_noise_key when the new data is invalid, and only update it when the new data is valid
                     print(
                         "Parse message package complete, robomaster_noise_key: ",
                         robomaster_noise_key,
