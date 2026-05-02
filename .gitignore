@@ -2,6 +2,4 @@
 
 sd/*
 **/__pycache__/*
-radar-sdr/bin/*
-radar-sdr/lib/*
-radar-sdr/include/*
+radar-sdr/*
