@@ -175,3 +175,40 @@ python main.py
 2. 在 `frame_parser/frame_parser.py` 增加 CRC8/CRC16 校验与命令字分发解析。
 3. 设计并落地 Rust UI 库接口，明确与 Python 侧的 MQTT topic、QoS、消息格式约定。
 4. 统一 `package.bin` 产物路径，避免 `launch/` 与 `tool/` 的路径分叉。
+
+## 使用系统 GNU Radio（虚拟环境兼容）
+
+如果虚拟环境中无法通过 `pip` 安装 `gnuradio`，可以让虚拟环境使用系统已安装的 GNU Radio 包，常用方式：
+
+- 临时（当前 shell 会话生效）：
+
+```bash
+export PYTHONPATH=/usr/lib/python3/dist-packages:$PYTHONPATH
+# 然后在同一终端运行项目（示例）：
+/home/harryh/RADAR-2026/RADAR-SDR/radar-sdr/bin/python main.py
+```
+
+- 永久（虚拟环境内生效）：
+
+编辑 `radar-sdr/pyvenv.cfg`，将 `include-system-site-packages = true`（若不存在则添加），然后重新激活虚拟环境：
+
+```bash
+source radar-sdr/bin/activate
+```
+
+- 其他选项：使用系统包管理器或 conda 安装 GNU Radio：
+
+```bash
+sudo apt update
+sudo apt install gnuradio python3-gnuradio
+# 或使用 conda:
+conda install -c conda-forge gnuradio pyqt
+```
+
+如果你已经在仓库里有 `init.sh`（包含 `export PYTHONPATH=...` 的脚本），可以直接运行：
+
+```bash
+source init.sh
+```
+
+以上任一方式能帮助虚拟环境在不直接用 pip 安装 `gnuradio` 的情况下导入系统的 GNU Radio 包。

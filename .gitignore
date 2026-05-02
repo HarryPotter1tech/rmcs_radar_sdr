@@ -1,6 +1,7 @@
 # 忽略 SD 卡镜像文件
 
 sd/*
-launch/__pycache__
-parser/__pycache__
-tcp_comm/__pycache__
+**/__pycache__/*
+radar-sdr/bin/*
+radar-sdr/lib/*
+radar-sdr/include/*

@@ -58,7 +58,7 @@ class RoboMaster_Noise_Key:
 FrameParseResult = Union[RoboMaster_Signal_Info, RoboMaster_Noise_Key, None]
 
 
-class FrameParser:
+class GnuRadioFrameParser:
     def __init__(self, receive_mode: str = "signal"):
         self.message_package: bytes = b""
         self.receive_mode: str = receive_mode
