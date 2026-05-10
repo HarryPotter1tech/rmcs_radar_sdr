@@ -27,15 +27,21 @@ source radar-sdr/bin/activate
 - `GFSK_Receiver.grc`、`Receiver_noise.grc`、`Receiver_noise.py`：接收侧链路脚本。
 - 文件名中的 `Transmmit`、`infentry` 等拼写保持了当前项目约定，除非做全局重构，否则不要单独改名。
 
-### 3. `tcp/`：TCP 收发与聚合入口
+### 3. `tcp/`：TCP 收发与解析
 
 - `tcp_comm.py`：TCP 连接、断线重连和字节流解析的核心实现。
-- `tcp_launch.py`：当前 TCP 联调入口，使用 4 个线程同时启动信号接收、噪声接收、数据中心接收和数据中心发送。
+- `tcp_comm.py`：TCP 连接、断线重连和字节流解析的核心实现。
 
-### 4. `parser/`：数据结构解析
+### 4. `control/`：GNU Radio 线程控制
+
+- `gnuradio_control.py`：启动 GNU Radio 线程，并在内部轮询更新参数。
+
+### 5. `parser/`：数据结构解析
 
 - `gnuradio_frame_parser.py`：把 GNU Radio 输出的字节流解析成信号信息和噪声密钥结构。
-- `datacenter_package_parser.py`：把数据中心来的雷达标记包解析成 `RadarInfo`。
+- `datacenter_package_parser.py`：把数据中心来的自动决策包解析成 `RadarInfo`。
+- `noise_window_tracker.py`：噪声密钥窗口统计逻辑。
+- `signal_window_tracker.py`：信号窗口统计逻辑。
 
 ## 当前端口映射
 
@@ -43,7 +49,7 @@ source radar-sdr/bin/activate
 
 - `127.0.0.1:2000`：GNU Radio 信号流输入，解析后更新 `RoboMaster_Signal_Info`
 - `127.0.0.1:2500`：GNU Radio 噪声密钥流输入，解析后更新 `RoboMaster_Noise_Key`
-- `192.168.1.10:1500`：数据中心回传接收端，解析后更新 `RadarMarkProcess`
+- `192.168.1.10:1500`：数据中心回传接收端，解析后更新 `RadarInfo`
 - `192.168.1.10:1000`：数据中心转发发送端，向 Unity 或外部客户端发包
 
 如果改动这些端口，必须同步检查 `tcp/tcp_comm.py`、GNU Radio 流图和外部客户端配置。
@@ -67,13 +73,6 @@ source radar-sdr/bin/activate
 - `sdr_behavior`
 - `sdr_key_1` 到 `sdr_key_6`
 
-### `RadarMarkProcess`
-
-这个结构承载数据中心雷达标记状态：
-
-- 敌方状态：`IsOpponentHeroDebuffed`、`IsOpponentEngineerDebuffed`、`IsOpponentInfantry3Debuffed`、`IsOpponentInfantry4Debuffed`、`IsOpponentAerialMarked`、`IsOpponentSentryDebuffed`
-- 己方状态：`IsAllyHeroMarked`、`IsAllyEngineerMarked`、`IsAllyInfantry3Marked`、`IsAllyInfantry4Marked`、`IsAllyAerialMarked`、`IsAllySentryMarked`
-
 ### `RadarMessageAutoDecisionSynchronization`
 
 这个结构承载数据中心自动决策同步信息：
@@ -83,9 +82,8 @@ source radar-sdr/bin/activate
 
 ### `RadarInfo`
 
-`RadarInfo` 是数据中心解析的组合结果，内部同时包含：
+`RadarInfo` 是数据中心解析的结果，内部包含：
 
-- `radar_mark_process`
 - `radar_message_auto_decision_synchronization`
 
 ## 端到端流程
@@ -95,7 +93,7 @@ source radar-sdr/bin/activate
 3. `launch/launch_tofile.py` 输出 `message_package.bin` 和 `noisekey_package.bin`。
 4. GNU Radio 流图读取对应输入文件，执行 GFSK 调制并通过 Pluto 发射。
 5. 接收端流图完成解调后通过本地 TCP 服务输出。
-6. `tcp/tcp_launch.py` 启动 TCP 端接收与转发，完成解析入口联调。
+6. `thread_init.py` 启动线程入口，完成 TCP 接收、密钥统计与 GNU Radio 控制。
 
 ## 快速使用
 
@@ -115,7 +113,7 @@ python launch/launch_tofile.py
 ### 3) 启动 TCP 联调
 
 ```bash
-python tcp/tcp_launch.py
+python thread_init.py
 ```
 
 ## 当前状态与注意事项
@@ -139,7 +137,7 @@ python tcp/tcp_launch.py
 
 ```bash
 export PYTHONPATH=/usr/lib/python3/dist-packages:$PYTHONPATH
-/home/pinkpanda/linux-RADAR/RADAR-2026/RADAR-SDR/radar-sdr/bin/python tcp/tcp_launch.py
+/home/pinkpanda/linux-RADAR/RADAR-2026/RADAR-SDR/radar-sdr/bin/python thread_init.py
 ```
 
 ### 永久生效

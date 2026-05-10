@@ -10,7 +10,7 @@
 
 ## 代码入口
 
-- `tcp/tcp_launch.py` 是当前 TCP 联调入口，会同时启动 4 个线程：信号接收、噪声密钥接收、数据中心转发、数据中心回传。
+- `thread_init.py` 是当前线程入口，会启动信号接收、噪声密钥接收、数据中心转发、数据中心回传，以及 GNU Radio 控制线程。
 - `tcp/tcp_comm.py` 是 TCP 连接与重连逻辑的核心实现。
 - `launch/launch_tofile.py` 是离线生成测试包的入口。
 - `gnu radio /GFSK_Transmmit_signal.py`、`gnu radio /GFSK_Receiver.py`、`gnu radio /Receiver_noise.py` 是 GNU Radio 导出的流图脚本。
@@ -44,7 +44,7 @@
 
 - `127.0.0.1:2000`：GNU Radio 信号流输入，解析后更新 `RoboMaster_Signal_Info`
 - `127.0.0.1:2500`：GNU Radio 噪声密钥流输入，解析后更新 `RoboMaster_Noise_Key`
-- `192.168.1.10:1500`：数据中心回传接收端，解析后更新 `RadarMarkProcess`
+- `192.168.1.10:1500`：数据中心回传接收端，解析后更新 `RadarInfo`
 - `192.168.1.10:1000`：数据中心转发发送端，向 Unity 或外部客户端发包
 
 这些端口是联调约定的一部分，修改时必须同步检查 GNU Radio 脚本和 TCP 入口。
@@ -114,7 +114,7 @@
 
 ### 并发模型不要局部改写
 
-当前 `tcp/tcp_launch.py` 使用共享对象加 `threading.Lock()` 的方式把四个通道串起来。修改时要保持：
+当前 `thread_init.py` 使用共享对象加 `threading.Lock()` 的方式把通道串起来。修改时要保持：
 
 - 共享对象的语义不变
 - 锁保护范围尽量小，但不能破坏原子更新
@@ -135,7 +135,7 @@
 
 当任务和通信链路有关时，优先查看这些文件：
 
-- `tcp/tcp_launch.py`
+- `thread_init.py`
 - `tcp/tcp_comm.py`
 - `parser/gnuradio_frame_parser.py`
 - `parser/datacenter_package_parser.py`
@@ -155,7 +155,7 @@ source radar-sdr/bin/activate
 
 1. 先生成离线包，确认 `launch/` 的打包逻辑没有坏。
 2. 再启动 GNU Radio 流图，确认端口和数据流能起来。
-3. 最后跑 `tcp/tcp_launch.py`，确认四个线程能同时启动并持续重连。
+3. 最后跑 `thread_init.py`，确认线程能同时启动并持续重连。
 
 如果你改的是协议字段或缓冲长度，优先做端到端联调，而不是只看单文件语法。
 

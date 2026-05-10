@@ -7,28 +7,40 @@
 # GNU Radio Python Flow Graph
 # Title: GFSK_Transmmit_signal
 # Author: huangziang
-# GNU Radio version: 3.10.7.0
+# GNU Radio version: 3.10.1.1
 
 from packaging.version import Version as StrictVersion
+
+if __name__ == '__main__':
+    import ctypes
+    import sys
+    if sys.platform.startswith('linux'):
+        try:
+            x11 = ctypes.cdll.LoadLibrary('libX11.so')
+            x11.XInitThreads()
+        except:
+            print("Warning: failed to XInitThreads()")
+
 from PyQt5 import Qt
-from gnuradio import qtgui
 from PyQt5.QtCore import QObject, pyqtSlot
+from gnuradio import qtgui
+from gnuradio.filter import firdes
+import sip
 from gnuradio import blocks
 import pmt
 from gnuradio import digital
 from gnuradio import gr
-from gnuradio.filter import firdes
 from gnuradio.fft import window
 import sys
 import signal
-from PyQt5 import Qt
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import iio
-import sip
 
 
+
+from gnuradio import qtgui
 
 class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
 
@@ -39,8 +51,8 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
-        except BaseException as exc:
-            print(f"Qt GUI: Could not set Icon: {str(exc)}", file=sys.stderr)
+        except:
+            pass
         self.top_scroll_layout = Qt.QVBoxLayout()
         self.setLayout(self.top_scroll_layout)
         self.top_scroll = Qt.QScrollArea()
@@ -60,8 +72,8 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
                 self.restoreGeometry(self.settings.value("geometry").toByteArray())
             else:
                 self.restoreGeometry(self.settings.value("geometry"))
-        except BaseException as exc:
-            print(f"Qt GUI: Could not restore geometry: {str(exc)}", file=sys.stderr)
+        except:
+            pass
 
         ##################################################
         # Variables
@@ -88,7 +100,6 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
         ##################################################
         # Blocks
         ##################################################
-
         self.qtgui_time_sink_x_0_0_0_0_0_0_0_2_0 = qtgui.time_sink_f(
             2048, #size
             sample_rate*2, #samp_rate
@@ -147,7 +158,7 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
             None # parent
         )
         self.qtgui_freq_sink_x_0.set_update_time(1)
-        self.qtgui_freq_sink_x_0.set_y_axis((-200), 200)
+        self.qtgui_freq_sink_x_0.set_y_axis(-200, 200)
         self.qtgui_freq_sink_x_0.set_y_label('db', 'dB')
         self.qtgui_freq_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
         self.qtgui_freq_sink_x_0.enable_autoscale(True)
@@ -219,7 +230,7 @@ class GFSK_Transmmit_signal(gr.top_block, Qt.QWidget):
             log=False,
             do_unpack=True)
         self.blocks_unpack_k_bits_bb_0 = blocks.unpack_k_bits_bb(1)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/home/harryh/RADAR-2026/RADAR-SDR/launch/message_package.bin', True, 0, 0)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/home/pinkpanda/linux-RADAR/RADAR-2026/RADAR-SDR/launch/message_package.bin', True, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_char_to_float_0 = blocks.char_to_float(1, 1)
 

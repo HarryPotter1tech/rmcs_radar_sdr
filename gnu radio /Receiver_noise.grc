@@ -127,6 +127,18 @@ blocks:
     coordinate: [680, 24.0]
     rotation: 0
     state: enabled
+- name: pi
+  id: variable
+  parameters:
+    comment: ''
+    value: '3.141592653589793'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1256, 24.0]
+    rotation: 0
+    state: enabled
 - name: sample_rate
   id: variable
   parameters:
@@ -201,7 +213,64 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [808, 256.0]
+    coordinate: [1160, 248.0]
+    rotation: 0
+    state: true
+- name: blocks_char_to_float_0_0_0_0
+  id: blocks_char_to_float
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: '1'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [480, 592.0]
+    rotation: 0
+    state: true
+- name: blocks_file_sink_0_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: /home/pinkpanda/linux-RADAR/RADAR-2026/RADAR-SDR/receive.bin
+    type: byte
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1736, 260.0]
+    rotation: 0
+    state: true
+- name: blocks_file_source_0
+  id: blocks_file_source
+  parameters:
+    affinity: ''
+    alias: ''
+    begin_tag: pmt.PMT_NIL
+    comment: ''
+    file: /home/pinkpanda/linux-RADAR/RADAR-2026/RADAR-SDR/launch/noisekey_package.bin
+    length: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    repeat: 'True'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [40, 636.0]
     rotation: 0
     state: true
 - name: blocks_pack_k_bits_bb_0_0
@@ -217,7 +286,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1064, 408.0]
+    coordinate: [1416, 400.0]
     rotation: 0
     state: true
 - name: blocks_stream_to_tagged_stream_0_0
@@ -236,13 +305,29 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1200, 400.0]
+    coordinate: [1552, 392.0]
+    rotation: 0
+    state: true
+- name: blocks_unpack_k_bits_bb_0
+  id: blocks_unpack_k_bits_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    k: '8'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [312, 592.0]
     rotation: 0
     state: true
 - name: digital_correlate_access_code_xx_ts_0_0
   id: digital_correlate_access_code_xx_ts
   parameters:
-    access_code: '0001011011101000110100110111011100010101000111000111001000101101'
+    access_code: '0001011011101000110100110111011100010101000111000111000100101101'
     affinity: ''
     alias: ''
     comment: ''
@@ -255,45 +340,92 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [784, 388.0]
+    coordinate: [1136, 380.0]
     rotation: 0
     state: true
-- name: digital_gfsk_demod_0_0
+- name: digital_gfsk_demod_0
   id: digital_gfsk_demod
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    freq_error: '0.2'
+    freq_error: '0.0'
     gain_mu: '0.175'
     log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
     mu: '0.5'
-    omega_relative_limit: '0.1'
-    samples_per_symbol: SPS
+    omega_relative_limit: '0.005'
+    samples_per_symbol: '52'
     sensitivity: 1/noise_sensitivity
     verbose: 'False'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [520, 284.0]
+    coordinate: [848, 340.0]
     rotation: 0
     state: true
-- name: iio_pluto_source_0
+- name: digital_gfsk_mod_0_0
+  id: digital_gfsk_mod
+  parameters:
+    affinity: ''
+    alias: ''
+    bt: '0.35'
+    comment: ''
+    do_unpack: 'True'
+    log: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_symbol: SPS
+    sensitivity: noise_sensitivity
+    verbose: 'True'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [512, 692.0]
+    rotation: 0
+    state: true
+- name: iio_pluto_sink_0
+  id: iio_pluto_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    attenuation1: '10'
+    bandwidth: '1000000'
+    buffer_size: '32768'
+    comment: ''
+    cyclic: 'False'
+    filter: ''
+    filter_source: '''Auto'''
+    fpass: '0'
+    frequency: '432200000'
+    fstop: '0'
+    len_tag_key: ''
+    samplerate: sample_rate
+    type: fc32
+    uri: 192.168.1.10
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [888, 672.0]
+    rotation: 0
+    state: enabled
+- name: iio_pluto_source_1
   id: iio_pluto_source
   parameters:
     affinity: ''
     alias: ''
-    bandwidth: '4000000'
+    bandwidth: '20000000'
     bbdc: 'True'
     buffer_size: '32768'
     comment: ''
     filter: ''
     filter_source: '''Auto'''
     fpass: '0'
-    frequency: noise_frequency
+    frequency: '432200000'
     fstop: '0'
     gain1: '''manual'''
     len_tag_key: packet_len
@@ -309,7 +441,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 124.0]
+    coordinate: [24, 124.0]
     rotation: 0
     state: true
 - name: low_pass_filter_0_0
@@ -333,7 +465,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [272, 160.0]
+    coordinate: [544, 312.0]
     rotation: 0
     state: true
 - name: network_tcp_sink_0_0
@@ -344,17 +476,17 @@ blocks:
     alias: ''
     comment: ''
     mode: '2'
-    port: '3000'
+    port: '2500'
     type: byte
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1416, 400.0]
+    coordinate: [1800, 392.0]
     rotation: 0
     state: true
-- name: qtgui_freq_sink_x_0_0_1
+- name: qtgui_freq_sink_x_0_0
   id: qtgui_freq_sink_x
   parameters:
     affinity: ''
@@ -372,7 +504,7 @@ blocks:
     autoscale: 'True'
     average: '0.05'
     axislabels: 'True'
-    bw: sample_rate*2
+    bw: sample_rate
     color1: '"dark blue"'
     color10: '"dark blue"'
     color2: '"red"'
@@ -404,7 +536,7 @@ blocks:
     legend: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
-    name: "\"GFSK-noise\u6EE4\u6CE2\u540E\u9891\u7387\u56FE\""
+    name: "\"GFSK-signal\u6EE4\u6CE2\u540E\u9891\u7387\u56FE\""
     nconnections: '1'
     norm_window: 'False'
     showports: 'True'
@@ -432,7 +564,88 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [520, 460.0]
+    coordinate: [880, 884.0]
+    rotation: 0
+    state: enabled
+- name: qtgui_freq_sink_x_0_0_1
+  id: qtgui_freq_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'True'
+    average: '0.05'
+    axislabels: 'True'
+    bw: sample_rate*4
+    color1: '"dark blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    ctrlpanel: 'True'
+    fc: signal_frequency
+    fftsize: '8192'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label: db
+    label1: shift
+    label10: ''''''
+    label2: noise
+    label3: ''''''
+    label4: ''''''
+    label5: ''''''
+    label6: ''''''
+    label7: ''''''
+    label8: ''''''
+    label9: ''''''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: "\"GFSK-noise\u6EE4\u6CE2\u540E\u9891\u7387\u56FE\""
+    nconnections: '2'
+    norm_window: 'False'
+    showports: 'True'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_tag: '""'
+    type: complex
+    units: dB
+    update_time: '1'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    wintype: window.WIN_HAMMING
+    ymax: '0'
+    ymin: '-70'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [784, 104.0]
     rotation: 0
     state: enabled
 - name: qtgui_time_sink_x_0_0_0_0_0_0_0_1_0
@@ -529,10 +742,10 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [968, 228.0]
+    coordinate: [1320, 220.0]
     rotation: 0
     state: enabled
-- name: qtgui_time_sink_x_0_0_0_0_0_0_0_2_0
+- name: qtgui_time_sink_x_0_0_0_0_0_0_0_1_0_0
   id: qtgui_time_sink_x
   parameters:
     affinity: ''
@@ -585,10 +798,10 @@ blocks:
     marker7: '-1'
     marker8: '-1'
     marker9: '-1'
-    name: "\"noise\u6EE4\u6CE2\u8F93\u51FA\""
+    name: "\"noise\u53D1\u9001bits\""
     nconnections: '1'
     size: '2048'
-    srate: sample_rate*2
+    srate: sample_rate / SPS
     stemplot: 'False'
     style1: '1'
     style10: '1'
@@ -606,7 +819,7 @@ blocks:
     tr_mode: qtgui.TRIG_MODE_FREE
     tr_slope: qtgui.TRIG_SLOPE_POS
     tr_tag: '""'
-    type: complex
+    type: float
     update_time: '1'
     width1: '1'
     width10: '1'
@@ -626,22 +839,28 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [528, 156.0]
+    coordinate: [640, 564.0]
     rotation: 0
     state: enabled
 
 connections:
 - [blocks_char_to_float_0_0_0, '0', qtgui_time_sink_x_0_0_0_0_0_0_0_1_0, '0']
+- [blocks_char_to_float_0_0_0_0, '0', qtgui_time_sink_x_0_0_0_0_0_0_0_1_0_0, '0']
+- [blocks_file_source_0, '0', blocks_unpack_k_bits_bb_0, '0']
+- [blocks_file_source_0, '0', digital_gfsk_mod_0_0, '0']
 - [blocks_pack_k_bits_bb_0_0, '0', blocks_stream_to_tagged_stream_0_0, '0']
+- [blocks_stream_to_tagged_stream_0_0, '0', blocks_file_sink_0_0, '0']
 - [blocks_stream_to_tagged_stream_0_0, '0', network_tcp_sink_0_0, '0']
+- [blocks_unpack_k_bits_bb_0, '0', blocks_char_to_float_0_0_0_0, '0']
 - [digital_correlate_access_code_xx_ts_0_0, '0', blocks_pack_k_bits_bb_0_0, '0']
-- [digital_gfsk_demod_0_0, '0', blocks_char_to_float_0_0_0, '0']
-- [digital_gfsk_demod_0_0, '0', digital_correlate_access_code_xx_ts_0_0, '0']
-- [iio_pluto_source_0, '0', low_pass_filter_0_0, '0']
-- [low_pass_filter_0_0, '0', digital_gfsk_demod_0_0, '0']
-- [low_pass_filter_0_0, '0', qtgui_freq_sink_x_0_0_1, '0']
-- [low_pass_filter_0_0, '0', qtgui_time_sink_x_0_0_0_0_0_0_0_2_0, '0']
+- [digital_gfsk_demod_0, '0', blocks_char_to_float_0_0_0, '0']
+- [digital_gfsk_demod_0, '0', digital_correlate_access_code_xx_ts_0_0, '0']
+- [digital_gfsk_mod_0_0, '0', iio_pluto_sink_0, '0']
+- [digital_gfsk_mod_0_0, '0', qtgui_freq_sink_x_0_0, '0']
+- [iio_pluto_source_1, '0', low_pass_filter_0_0, '0']
+- [iio_pluto_source_1, '0', qtgui_freq_sink_x_0_0_1, '0']
+- [low_pass_filter_0_0, '0', digital_gfsk_demod_0, '0']
+- [low_pass_filter_0_0, '0', qtgui_freq_sink_x_0_0_1, '1']
 
 metadata:
   file_format: 1
-  grc_version: 3.10.7.0
