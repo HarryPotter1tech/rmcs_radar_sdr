@@ -248,81 +248,61 @@ def tcp_datacenter_transmitter(
                 break
             except socket.error as e:
                 log("event", f"Error to initialize parser server: {e}")
-    # this loop try to bind a port until success, then wait for unity
-    # client to connect, once connected, send data to unity client, if
-    #  connection is closed or error occurs, close the connection and
-    # wait for next connection.
-    while True:
-        tcp_socket.listen(1)
-        connection, client_address = tcp_socket.accept()
-        log("event", f"Unity client connected: {client_address}")
-        try:
-            while True:
-                with lock:
-                    data: bytes = (
-                        0x0A06.to_bytes(2, byteorder="big")
-                        + noise_key.sdr_behavior.to_bytes(1, byteorder="big")
-                        + noise_key.sdr_key_1.to_bytes(1, byteorder="big")
-                        + noise_key.sdr_key_2.to_bytes(1, byteorder="big")
-                        + noise_key.sdr_key_3.to_bytes(1, byteorder="big")
-                        + noise_key.sdr_key_4.to_bytes(1, byteorder="big")
-                        + noise_key.sdr_key_5.to_bytes(1, byteorder="big")
-                        + noise_key.sdr_key_6.to_bytes(1, byteorder="big")
-                        + 0x0A07.to_bytes(2, byteorder="big")
-                        + signal_info.hero_position[0].to_bytes(2, byteorder="big")#hero_position_x
-                        + signal_info.hero_position[1].to_bytes(2, byteorder="big")#hero_position_y
-                        + signal_info.engineer_position[0].to_bytes(2, byteorder="big")#engineer_position_x
-                        + signal_info.engineer_position[1].to_bytes(2, byteorder="big")#engineer_position_y
-                        + signal_info.infentry_position_1[0].to_bytes(2, byteorder="big")#infentry_position_1_x
-                        + signal_info.infentry_position_1[1].to_bytes(2, byteorder="big")#infentry_position_1_y
-                        + signal_info.infentry_position_2[0].to_bytes(2, byteorder="big")#infentry_position_2_x
-                        + signal_info.infentry_position_2[1].to_bytes(2, byteorder="big")#infentry_position_2_y
-                        + signal_info.drone_position[0].to_bytes(2, byteorder="big")#drone_position_x
-                        + signal_info.drone_position[1].to_bytes(2, byteorder="big")#drone_position_y
-                        + signal_info.sentinel_position[0].to_bytes(2, byteorder="big")#sentinel_position_x
-                        + signal_info.sentinel_position[1].to_bytes(2, byteorder="big")#sentinel_position_y
-                        + signal_info.hero_blood.to_bytes(1, "big")#hero_blood
-                        + signal_info.engineer_blood.to_bytes(1, "big")#engineer_blood
-                        + signal_info.infentry_blood_1.to_bytes(1, "big")#infentry_1_blood
-                        + signal_info.infentry_blood_2.to_bytes(1, "big")#infentry_2_blood
-                        + signal_info.sentinel_blood.to_bytes(1, "big")#sentinel_blood
-                        + signal_info.hero_gain[2].to_bytes(1, "big")#hero_gain
-                        + signal_info.engineer_gain[2].to_bytes(1, "big")#engineer_gain
-                        + signal_info.infentry_gain_1[2].to_bytes(1, "big")#infentry_1_gain
-                        + signal_info.infentry_gain_2[2].to_bytes(1, "big")#infentry_2_gain
-                        + signal_info.sentinel_gain[2].to_bytes(1, "big")#sentinel_gain
-                    )
-                log_data("parsed", "noise_key_state", noise_key)
-                log("event", f"Data length: {len(data)}")
-                connection.sendall(data)
-                log_data("unity_tx", "sent_packet", data)
-                time.sleep(0.1)
-        except socket.error as e:
-            log("event", f"Error sending data to unity client: {e}")
-        finally:
-            connection.close()
-        # this loop will keep transmitting data to unity client
+
+        # this loop tries to bind a port until success, then wait for unity
+        # client to connect; once connected, send data to unity client; if
+        # connection is closed or error occurs, close the connection and
+        # wait for next connection.
+        while True:
+            tcp_socket.listen(1)
+            connection, client_address = tcp_socket.accept()
+            log("event", f"Unity client connected: {client_address}")
+            try:
+                while True:
+                    with lock:
+                        data: bytes = (
+                            0x0A06.to_bytes(2, byteorder="big")
+                            + noise_key.sdr_behavior.to_bytes(1, byteorder="big")
+                            + noise_key.sdr_key_1.to_bytes(1, byteorder="big")
+                            + noise_key.sdr_key_2.to_bytes(1, byteorder="big")
+                            + noise_key.sdr_key_3.to_bytes(1, byteorder="big")
+                            + noise_key.sdr_key_4.to_bytes(1, byteorder="big")
+                            + noise_key.sdr_key_5.to_bytes(1, byteorder="big")
+                            + noise_key.sdr_key_6.to_bytes(1, byteorder="big")
+                            + 0x0A07.to_bytes(2, byteorder="big")
+                            + signal_info.hero_position[0].to_bytes(2, byteorder="big")
+                            + signal_info.hero_position[1].to_bytes(2, byteorder="big")
+                            + signal_info.engineer_position[0].to_bytes(2, byteorder="big")
+                            + signal_info.engineer_position[1].to_bytes(2, byteorder="big")
+                            + signal_info.infentry_position_1[0].to_bytes(2, byteorder="big")
+                            + signal_info.infentry_position_1[1].to_bytes(2, byteorder="big")
+                            + signal_info.infentry_position_2[0].to_bytes(2, byteorder="big")
+                            + signal_info.infentry_position_2[1].to_bytes(2, byteorder="big")
+                            + signal_info.drone_position[0].to_bytes(2, byteorder="big")
+                            + signal_info.drone_position[1].to_bytes(2, byteorder="big")
+                            + signal_info.sentinel_position[0].to_bytes(2, byteorder="big")
+                            + signal_info.sentinel_position[1].to_bytes(2, byteorder="big")
+                            + signal_info.hero_blood.to_bytes(1, "big")
+                            + signal_info.engineer_blood.to_bytes(1, "big")
+                            + signal_info.infentry_blood_1.to_bytes(1, "big")
+                            + signal_info.infentry_blood_2.to_bytes(1, "big")
+                            + signal_info.sentinel_blood.to_bytes(1, "big")
+                            + signal_info.hero_gain[2].to_bytes(1, "big")
+                            + signal_info.engineer_gain[2].to_bytes(1, "big")
+                            + signal_info.infentry_gain_1[2].to_bytes(1, "big")
+                            + signal_info.infentry_gain_2[2].to_bytes(1, "big")
+                            + signal_info.sentinel_gain[2].to_bytes(1, "big")
+                        )
+                    log_data("parsed", "noise_key_state", noise_key)
+                    log_data("parsed", "signal_info_state", signal_info)
+                    log("event", f"Data length: {len(data)}")
+                    connection.sendall(data)
+                    log_data("unity_tx", "sent_packet", data)
+                    time.sleep(0.1)
+            except socket.error as e:
+                log("event", f"Error sending data to unity client: {e}")
+            finally:
+                connection.close()
+            # loop continues to accept next client
     finally:
         log_thread_stop("event", threading.current_thread().name)
-
-
-# here I choose diffenetly designed because for gnuradio
-# signal /noise key these tcp messages are more link the
-# message stream through i call them package but exactly
-# they are the message stream, so I design the tcp_signal
-# receiver and tcp_noise_key_receiver keep connecting all
-# the time and receive the message stream, then parse the
-# message stream to get the signal info and noise key
-
-# but for datacenter package, I think the tcp connection
-# between unity and sdr is more like small talk,we dont
-# need to transmit a lot of data ,and every package is
-# independent, and closure,this is really package that not
-# message stream, so I design the tcp_datacenter_receiver
-# to receive and transmit package in a const frequency ,
-# just like what the robomaster gameserver do,which transmit
-# or receive data in 10hz,or 1hz
-# but whatever the unity client or sdr client,they keep connecting
-# to the relative server ,and receive data negatively.the
-# right that control frenquency is deciside by server,in my
-# design concept:who send data,who set rule,thats all

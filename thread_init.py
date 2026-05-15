@@ -67,8 +67,8 @@ def main() -> None:
     gnuradio_controller = GnuradioController(shared_state, lock)
     gnuradio_controller.start()
 
-    _wait_for_port("127.0.0.1", 2000, 10.0)
-    _wait_for_port("127.0.0.1", 2500, 10.0)
+    _wait_for_port("127.0.0.1", 2000, 1.0)
+    _wait_for_port("127.0.0.1", 2500, 1.0)
 
     signal_thread = threading.Thread(
         target=tcp_gnuradio_signal_receiver,
@@ -96,10 +96,13 @@ def main() -> None:
         args=(radar_info, lock, shared_state),
         daemon=True,
     )
-
+    signal_thread.start()
+    noise_key_thread.start()
     transmitter_thread.start()
     receiver_thread.start()
 
+    signal_thread.join()
+    noise_key_thread.join()
     transmitter_thread.join()
     receiver_thread.join()
 
