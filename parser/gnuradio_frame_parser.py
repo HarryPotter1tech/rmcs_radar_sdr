@@ -269,7 +269,7 @@ class GnuRadioFrameParser:
 
         if self.receive_mode == "noise":
             noise_key = RoboMaster_Noise_Key()
-            print(self.receive_mode)
+            # print(self.receive_mode)
             for i in range(0, len(self.message_package), 1):
                 cmd_id: int = int.from_bytes(
                     self.message_package[i : i + 2], byteorder="big"
@@ -296,6 +296,6 @@ class GnuRadioFrameParser:
                     noise_key.sdr_key_6 = int.from_bytes(
                         self.message_package[i + 8 : i + 9], byteorder="big"
                     )  # 1 byte
-                    print(self.message_package[i : i + 9])
+                    # print(self.message_package[i : i + 9])
                     return noise_key
             return None
