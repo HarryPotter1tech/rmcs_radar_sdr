@@ -72,7 +72,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1056, 528.0]
+    coordinate: [144, 504.0]
     rotation: 0
     state: true
 - name: noise_bandwidth
@@ -151,7 +151,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1184, 512.0]
+    coordinate: [272, 488.0]
     rotation: 0
     state: true
 - name: noise_sensitivity
@@ -255,6 +255,24 @@ blocks:
     coordinate: [976, 184.0]
     rotation: 0
     state: true
+- name: blocks_file_sink_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: /home/pinkpanda/linux-RADAR/RADAR-2026/RADAR-SDR/receive.bin
+    type: byte
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1584, 180.0]
+    rotation: 0
+    state: true
 - name: blocks_pack_k_bits_bb_0
   id: blocks_pack_k_bits_bb
   parameters:
@@ -268,7 +286,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1224, 312.0]
+    coordinate: [1216, 328.0]
     rotation: 0
     state: true
 - name: blocks_stream_to_tagged_stream_0
@@ -287,7 +305,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1400, 320.0]
+    coordinate: [1360, 320.0]
     rotation: 0
     state: true
 - name: digital_correlate_access_code_xx_ts_0
@@ -344,7 +362,7 @@ blocks:
     filter: ''
     filter_source: '''Auto'''
     fpass: '0'
-    frequency: '432200000'
+    frequency: signal_frequency
     fstop: '0'
     gain1: '''manual'''
     len_tag_key: packet_len
@@ -360,7 +378,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [16, 348.0]
+    coordinate: [152, 228.0]
     rotation: 0
     state: true
 - name: low_pass_filter_0
@@ -684,6 +702,7 @@ blocks:
 connections:
 - [blocks_char_to_float_0_0, '0', qtgui_time_sink_x_0_0_0_0_0_0_0_1, '0']
 - [blocks_pack_k_bits_bb_0, '0', blocks_stream_to_tagged_stream_0, '0']
+- [blocks_stream_to_tagged_stream_0, '0', blocks_file_sink_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', network_tcp_sink_0, '0']
 - [digital_correlate_access_code_xx_ts_0, '0', blocks_pack_k_bits_bb_0, '0']
 - [digital_gfsk_demod_0, '0', blocks_char_to_float_0_0, '0']

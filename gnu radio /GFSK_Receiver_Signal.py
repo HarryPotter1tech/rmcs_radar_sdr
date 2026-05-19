@@ -311,7 +311,7 @@ class GFSK_Receiver_Signal(gr.top_block, Qt.QWidget):
                 6.76))
         self.iio_pluto_source_1 = iio.fmcomms2_source_fc32('192.168.1.10' if '192.168.1.10' else iio.get_pluto_uri(), [True, True], 32768)
         self.iio_pluto_source_1.set_len_tag_key('packet_len')
-        self.iio_pluto_source_1.set_frequency(432200000)
+        self.iio_pluto_source_1.set_frequency(signal_frequency)
         self.iio_pluto_source_1.set_samplerate(sample_rate)
         self.iio_pluto_source_1.set_gain_mode(0, 'manual')
         self.iio_pluto_source_1.set_gain(0, 60)
@@ -357,6 +357,8 @@ class GFSK_Receiver_Signal(gr.top_block, Qt.QWidget):
           12, 'access_code+header')
         self.blocks_stream_to_tagged_stream_0 = blocks.stream_to_tagged_stream(gr.sizeof_char, 1, 15, "packet_len")
         self.blocks_pack_k_bits_bb_0 = blocks.pack_k_bits_bb(8)
+        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/home/pinkpanda/linux-RADAR/RADAR-2026/RADAR-SDR/receive.bin', False)
+        self.blocks_file_sink_0.set_unbuffered(False)
         self.blocks_char_to_float_0_0 = blocks.char_to_float(1, 1)
 
 
@@ -365,6 +367,7 @@ class GFSK_Receiver_Signal(gr.top_block, Qt.QWidget):
         ##################################################
         self.connect((self.blocks_char_to_float_0_0, 0), (self.qtgui_time_sink_x_0_0_0_0_0_0_0_1, 0))
         self.connect((self.blocks_pack_k_bits_bb_0, 0), (self.blocks_stream_to_tagged_stream_0, 0))
+        self.connect((self.blocks_stream_to_tagged_stream_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.blocks_stream_to_tagged_stream_0, 0), (self.network_tcp_sink_0, 0))
         self.connect((self.digital_correlate_access_code_xx_ts_0, 0), (self.blocks_pack_k_bits_bb_0, 0))
         self.connect((self.digital_gfsk_demod_0, 0), (self.blocks_char_to_float_0_0, 0))
@@ -431,6 +434,7 @@ class GFSK_Receiver_Signal(gr.top_block, Qt.QWidget):
 
     def set_signal_frequency(self, signal_frequency):
         self.signal_frequency = signal_frequency
+        self.iio_pluto_source_1.set_frequency(self.signal_frequency)
         self.qtgui_freq_sink_x_0_0.set_frequency_range(self.signal_frequency, self.sample_rate*2)
 
     def get_signal_bandwidth(self):

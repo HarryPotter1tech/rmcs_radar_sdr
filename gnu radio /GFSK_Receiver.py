@@ -497,7 +497,7 @@ class GFSK_Receiver(gr.top_block, Qt.QWidget):
             1,
             firdes.low_pass(
                 1,
-                sample_rate*4,
+                sample_rate,
                 260000,
                 10000,
                 window.WIN_HAMMING,
@@ -667,7 +667,7 @@ class GFSK_Receiver(gr.top_block, Qt.QWidget):
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
         self.iio_pluto_source_1.set_samplerate(self.sample_rate)
-        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.sample_rate*4, 260000, 10000, window.WIN_HAMMING, 6.76))
+        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.sample_rate, 260000, 10000, window.WIN_HAMMING, 6.76))
         self.low_pass_filter_0_0.set_taps(firdes.low_pass(1, self.sample_rate, 500000, 10000, window.WIN_HAMMING, 6.76))
         self.qtgui_freq_sink_x_0_0.set_frequency_range(self.signal_frequency, self.sample_rate*2)
         self.qtgui_freq_sink_x_0_0_0.set_frequency_range(self.signal_frequency, self.sample_rate*2)

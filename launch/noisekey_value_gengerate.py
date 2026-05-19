@@ -118,14 +118,9 @@ class NoiseKeyValueGenerator:
         return crc ^ 0xFFFF
 
     def message_pack(self) -> bytes:
+        # Protocol-defined 0x0A06 payload is only the 6-byte key.
         payload = (
-            self.sdr_behavior
-            + self.key_1
-            + self.key_2
-            + self.key_3
-            + self.key_4
-            + self.key_5
-            + self.key_6
+            self.key_1 + self.key_2 + self.key_3 + self.key_4 + self.key_5 + self.key_6
         )
         self.message_package = self._build_frame(self.cmd_id_6, payload)
         print(len(self.message_package))
@@ -133,7 +128,7 @@ class NoiseKeyValueGenerator:
 
     def _build_frame(self, cmd_id: bytes, payload: bytes) -> bytes:
         # data_length: 2 字节
-        data_length = len(payload).to_bytes(2, byteorder="little")
+        data_length = len(payload).to_bytes(2, byteorder="big")
 
         # 头: SOF(1) + data_length(2) + seq(1)
         header = (
@@ -141,9 +136,9 @@ class NoiseKeyValueGenerator:
             + data_length
             + self.seq.to_bytes(1, byteorder="big")
         )
-        crc8_val = self.crc8(header).to_bytes(1, byteorder="little")
+        crc8_val = self.crc8(header).to_bytes(1, byteorder="big")
         frame_wo_crc16 = header + crc8_val + cmd_id + payload
-        crc16_val = self.crc16(frame_wo_crc16).to_bytes(2, byteorder="little")
+        crc16_val = self.crc16(frame_wo_crc16).to_bytes(2, byteorder="big")
         return (
             frame_wo_crc16
             + crc16_val

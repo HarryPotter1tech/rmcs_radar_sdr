@@ -44,7 +44,7 @@ class RoboMaster_Signal_Info:
 @dataclass
 class RoboMaster_Noise_Key:
     cmd_id_6: int = 0x0A06
-    sdr_behavior: int = 2  # 1 byte
+    sdr_behavior: int = 2  # local state; not carried in the protocol payload
     # if sdr_behavior=1,change sdr_key
     # if sdr_behavior=2, transmit sdr_key to robomaster server
     sdr_key_1: int = 0  # 1 byte
@@ -275,27 +275,24 @@ class GnuRadioFrameParser:
                     self.message_package[i : i + 2], byteorder="big"
                 )
                 if cmd_id == noise_key.cmd_id_6:
-                    noise_key.sdr_behavior = int.from_bytes(
+                    noise_key.sdr_key_1 = int.from_bytes(
                         self.message_package[i + 2 : i + 3], byteorder="big"
                     )  # 1 byte
-                    noise_key.sdr_key_1 = int.from_bytes(
+                    noise_key.sdr_key_2 = int.from_bytes(
                         self.message_package[i + 3 : i + 4], byteorder="big"
                     )  # 1 byte
-                    noise_key.sdr_key_2 = int.from_bytes(
+                    noise_key.sdr_key_3 = int.from_bytes(
                         self.message_package[i + 4 : i + 5], byteorder="big"
                     )  # 1 byte
-                    noise_key.sdr_key_3 = int.from_bytes(
+                    noise_key.sdr_key_4 = int.from_bytes(
                         self.message_package[i + 5 : i + 6], byteorder="big"
                     )  # 1 byte
-                    noise_key.sdr_key_4 = int.from_bytes(
+                    noise_key.sdr_key_5 = int.from_bytes(
                         self.message_package[i + 6 : i + 7], byteorder="big"
                     )  # 1 byte
-                    noise_key.sdr_key_5 = int.from_bytes(
+                    noise_key.sdr_key_6 = int.from_bytes(
                         self.message_package[i + 7 : i + 8], byteorder="big"
                     )  # 1 byte
-                    noise_key.sdr_key_6 = int.from_bytes(
-                        self.message_package[i + 8 : i + 9], byteorder="big"
-                    )  # 1 byte
-                    # print(self.message_package[i : i + 9])
+                    # print(self.message_package[i : i + 8])
                     return noise_key
             return None

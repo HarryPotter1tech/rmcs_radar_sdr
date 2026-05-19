@@ -147,7 +147,7 @@ class MessageValueGenerator:
             self.infentry_gain_2 = self._pack_gain(infentry_gain_2)
             self.drone_gain = self._pack_gain(drone_gain)
             self.sentinel_gain = self._pack_gain(sentinel_gain)
-            self.sentinel_posture = sentinel_posture.to_bytes(1, byteorder="little")
+            self.sentinel_posture = sentinel_posture.to_bytes(1, byteorder="big")
         if self.set_mode == "random":
             self.hero_position_x = random.randint(0, 1000).to_bytes(2, byteorder="big")
             self.hero_position_y = random.randint(0, 1000).to_bytes(2, byteorder="big")
@@ -211,9 +211,7 @@ class MessageValueGenerator:
             self.infentry_gain_2 = self._pack_gain(self.infentry_gain_2)
             self.drone_gain = self._pack_gain(self.drone_gain)
             self.sentinel_gain = self._pack_gain(self.sentinel_gain)
-            self.sentinel_posture = random.randint(0, 255).to_bytes(
-                1, byteorder="little"
-            )
+                self.sentinel_posture = random.randint(0, 255).to_bytes(1, byteorder="big")
             print("Random values generate>>>.")
             print(
                 int.from_bytes(self.hero_position_x, byteorder="big"),
@@ -258,7 +256,7 @@ class MessageValueGenerator:
             print(int.from_bytes(self.infentry_gain_1, byteorder="big"))
             print(int.from_bytes(self.infentry_gain_2, byteorder="big"))
             print(int.from_bytes(self.sentinel_gain, byteorder="big"))
-            print(int.from_bytes(self.sentinel_posture, byteorder="little"))
+            print(int.from_bytes(self.sentinel_posture, byteorder="big"))
             print("Random values printed successfully.")
         # frame_tail
         self._crc16 = 0x0000
@@ -336,7 +334,7 @@ class MessageValueGenerator:
 
     def _build_frame(self, cmd_id: bytes, payload: bytes) -> bytes:
         # data_length: 2 字节
-        data_length = len(payload).to_bytes(2, byteorder="little")
+        data_length = len(payload).to_bytes(2, byteorder="big")
 
         # 头: SOF(1) + data_length(2) + seq(1)
         header = (
@@ -344,9 +342,9 @@ class MessageValueGenerator:
             + data_length
             + self.seq.to_bytes(1, byteorder="big")
         )
-        crc8_val = self.crc8(header).to_bytes(1, byteorder="little")
+        crc8_val = self.crc8(header).to_bytes(1, byteorder="big")
         frame_wo_crc16 = header + crc8_val + cmd_id + payload
-        crc16_val = self.crc16(frame_wo_crc16).to_bytes(2, byteorder="little")
+        crc16_val = self.crc16(frame_wo_crc16).to_bytes(2, byteorder="big")
 
         return frame_wo_crc16 + crc16_val
 

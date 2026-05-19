@@ -221,6 +221,24 @@ blocks:
     coordinate: [896, 528.0]
     rotation: 0
     state: true
+- name: blocks_file_sink_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: /home/pinkpanda/linux-RADAR/RADAR-2026/RADAR-SDR/receive.bin
+    type: byte
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1248, 740.0]
+    rotation: 0
+    state: true
 - name: blocks_file_source_0
   id: blocks_file_source
   parameters:
@@ -228,7 +246,7 @@ blocks:
     alias: ''
     begin_tag: pmt.PMT_NIL
     comment: ''
-    file: /home/harryh/RADAR-2026/RADAR-SDR/launch/message_package.bin
+    file: /home/pinkpanda/linux-RADAR/RADAR-2026/RADAR-SDR/launch/message_package.bin
     length: '0'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -310,7 +328,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [832, 624.0]
+    coordinate: [832, 620.0]
     rotation: 0
     state: true
 - name: digital_gfsk_demod_0
@@ -996,6 +1014,7 @@ connections:
 - [blocks_char_to_float_0_0, '0', qtgui_time_sink_x_0_0_0_0_0_0_0_1, '0']
 - [blocks_file_source_0, '0', blocks_unpack_k_bits_bb_0, '0']
 - [blocks_file_source_0, '0', digital_gfsk_mod_0, '0']
+- [blocks_pack_k_bits_bb_0, '0', blocks_file_sink_0, '0']
 - [blocks_pack_k_bits_bb_0, '0', blocks_stream_to_tagged_stream_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', network_tcp_sink_0, '0']
 - [blocks_unpack_k_bits_bb_0, '0', blocks_char_to_float_0, '0']
@@ -1012,4 +1031,3 @@ connections:
 
 metadata:
   file_format: 1
-  grc_version: 3.10.7.0

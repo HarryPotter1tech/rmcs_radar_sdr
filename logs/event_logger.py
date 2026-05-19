@@ -40,6 +40,9 @@ def log(module: str, message: str, tag: str | None = None) -> None:
     with lock:
         with open(path, "a", encoding="utf-8") as f:
             f.write(line)
+    if module in {"event", "gnuradiocontrol"}:
+        echo_line = f"[{module}] {tag or ''} {message}".strip()
+        print(echo_line, flush=True)
 
 
 def _stringify_data(data) -> str:
